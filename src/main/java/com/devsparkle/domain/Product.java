@@ -1,6 +1,7 @@
 package com.devsparkle.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import io.swagger.annotations.ApiModel;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -15,6 +16,7 @@ import com.devsparkle.domain.enumeration.Size;
 /**
  * A Product.
  */
+@ApiModel(description = "Product sold by online store")
 @Entity
 @Table(name = "product")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
