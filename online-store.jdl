@@ -1,95 +1,137 @@
-entity Product {
-    name String required
-    description String
-    price BigDecimal required min(0)
-    size Size required
-    image ImageBlob
+application {
+  config {
+    applicationType monolith
+    authenticationType jwt
+    baseName store
+    blueprints []
+    buildTool gradle
+    cacheProvider hazelcast
+    clientFramework angularX
+    clientPackageManager npm
+    clientTheme none
+    creationTimestamp 1593596133788
+    databaseType sql
+    devDatabaseType h2Disk
+    dtoSuffix DTO
+    embeddableLaunchScript false
+    enableHibernateCache true
+    enableSwaggerCodegen false
+    enableTranslation true
+    jhiPrefix jhi
+    jhipsterVersion "6.10.0"
+    jwtSecretKey "Zjg1ODZhNmE2ZTk0YTdkZjc1Y2IyOTJmYjU3ZmNlMTM2YmM4OTVhNTc1M2Q3YjdjY2Y0YmQ2MDc1NDMyNDQ0NDBkZjgwNmE0NTBjNmI5NjZkOTA2MWJkMzljYWVkOTc3ZjJhOWFmNzZkOGVjYzczYTJmNTc0MmRjY2JiNTJkYjY="
+    languages [en]
+    messageBroker false
+    nativeLanguage en
+    otherModules []
+    packageName com.devsparkle
+    prodDatabaseType mysql
+    searchEngine false
+    serverPort 8080
+    serviceDiscoveryType false
+    skipClient false
+    skipServer false
+    skipUserManagement false
+    testFrameworks [protractor]
+    useSass true
+    websocket spring-websocket
+  }
+
+  entities Customer, Invoice, OrderItem, Product, ProductCategory, ProductOrder, Shipment
 }
- enum Size {
-    S, M, L, XL, XXL
-}
- entity ProductCategory {
-    name String required
-    description String
- }
 
 entity Customer {
-    firstName String required
-    lastName String required
-    gender Gender required
-    email String required pattern(/^[^@\s]+@[^@\s]+\.[^@\s]+$/)
-    phone String required
-    addressLine1 String required
-    addressLine2 String
-    city String required
-    country String required
+  firstName String required,
+  lastName String required,
+  gender Gender required,
+  email String required pattern(/^[^@\s]+@[^@\s]+\.[^@\s]+$/),
+  phone String required,
+  addressLine1 String required,
+  addressLine2 String,
+  city String required,
+  country String required
 }
-
-enum Gender {
-    MALE, FEMALE, OTHER
-}
-
-entity ProductOrder {
-    placedDate Instant required
-    status OrderStatus required
-    code String required
-}
- enum OrderStatus {
-    COMPLETED, PENDING, CANCELLED
-}
- entity OrderItem {
-    quantity Integer required min(0)
-
-totalPrice BigDecimal required min(0)
-    status OrderItemStatus required
-}
- enum OrderItemStatus {
-    AVAILABLE, OUT_OF_STOCK, BACK_ORDER
-}
-
 entity Invoice {
-    date Instant required
-    details String
-    status InvoiceStatus required
-    paymentMethod PaymentMethod required
-    paymentDate Instant required
-    paymentAmount BigDecimal required
-    }
- enum InvoiceStatus {
-    PAID, ISSUED, CANCELLED
+  date Instant required,
+  details String,
+  status InvoiceStatus required,
+  paymentMethod PaymentMethod required,
+  paymentDate Instant required,
+  paymentAmount BigDecimal required,
+  code String required
 }
- enum PaymentMethod {
-    CREDIT_CARD, CASH_ON_DELIVERY, PAYPAL
+entity OrderItem {
+  quantity Integer required min(0),
+  totalPrice BigDecimal required min(0),
+  status OrderItemStatus required
 }
- entity Shipment {
-    trackingCode String
-    date Instant required
-    details String
+entity Product {
+  name String required,
+  description String,
+  price BigDecimal required min(0),
+  size Size required,
+  image ImageBlob
 }
+entity ProductCategory {
+  name String required,
+  description String
+}
+entity ProductOrder {
+  placedDate Instant required,
+  status OrderStatus required,
+  code String required
+}
+entity Shipment {
+  trackingCode String,
+  date Instant required,
+  details String
+}
+enum Gender {
+  MALE,
+  FEMALE,
+  OTHER
+}
+enum InvoiceStatus {
+  PAID,
+  ISSUED,
+  CANCELLED
+}
+enum PaymentMethod {
+  CREDIT_CARD,
+  CASH_ON_DELIVERY,
+  PAYPAL
+}
+enum OrderItemStatus {
+  AVAILABLE,
+  OUT_OF_STOCK,
+  BACK_ORDER
+}
+enum Size {
+  S,
+  M,
+  L,
+  XL,
+  XXL
+}
+enum OrderStatus {
+  COMPLETED,
+  PENDING,
+  CANCELLED
+}
+
 relationship OneToOne {
-    Customer{user} to User
+  Customer{user(login) required} to User
 }
-
-
-/**
- * Many to one relationship.
- */
-relationship ManyToOne {
-    OrderItem{product} to Product
-}
-
-/**
- * One to many relationship.
- */
 relationship OneToMany {
-    Customer{order} to ProductOrder{customer},
-   ProductOrder{orderItem} to OrderItem{order},
-   ProductOrder{invoice} to Invoice{order},
-   Invoice{shipment} to Shipment{invoice},
-   ProductCategory{product} to Product{ProductCategory}
-
+  ProductOrder{invoice} to Invoice{order(code) required},
+  ProductOrder{orderItem} to OrderItem{order(code) required},
+  ProductCategory{product} to Product{productCategory(name)},
+  Customer{order} to ProductOrder{customer(email) required},
+  Invoice{shipment} to Shipment{invoice(code) required}
+}
+relationship ManyToOne {
+  OrderItem{product(name) required} to Product
 }
 
-service * with serviceClass
-
-paginate Product, Customer, ProductOrder, Invoice, Shipment, OrderItem with pagination
+paginate Customer, Invoice, OrderItem, Product, ProductOrder, Shipment with pagination
+service Customer, Invoice, OrderItem, Product, ProductCategory, ProductOrder, Shipment with serviceClass

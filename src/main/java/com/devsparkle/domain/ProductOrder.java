@@ -43,13 +43,14 @@ public class ProductOrder implements Serializable {
 
     @OneToMany(mappedBy = "order")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    private Set<OrderItem> orderItems = new HashSet<>();
+    private Set<Invoice> invoices = new HashSet<>();
 
     @OneToMany(mappedBy = "order")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    private Set<Invoice> invoices = new HashSet<>();
+    private Set<OrderItem> orderItems = new HashSet<>();
 
-    @ManyToOne
+    @ManyToOne(optional = false)
+    @NotNull
     @JsonIgnoreProperties(value = "orders", allowSetters = true)
     private Customer customer;
 
@@ -101,31 +102,6 @@ public class ProductOrder implements Serializable {
         this.code = code;
     }
 
-    public Set<OrderItem> getOrderItems() {
-        return orderItems;
-    }
-
-    public ProductOrder orderItems(Set<OrderItem> orderItems) {
-        this.orderItems = orderItems;
-        return this;
-    }
-
-    public ProductOrder addOrderItem(OrderItem orderItem) {
-        this.orderItems.add(orderItem);
-        orderItem.setOrder(this);
-        return this;
-    }
-
-    public ProductOrder removeOrderItem(OrderItem orderItem) {
-        this.orderItems.remove(orderItem);
-        orderItem.setOrder(null);
-        return this;
-    }
-
-    public void setOrderItems(Set<OrderItem> orderItems) {
-        this.orderItems = orderItems;
-    }
-
     public Set<Invoice> getInvoices() {
         return invoices;
     }
@@ -149,6 +125,31 @@ public class ProductOrder implements Serializable {
 
     public void setInvoices(Set<Invoice> invoices) {
         this.invoices = invoices;
+    }
+
+    public Set<OrderItem> getOrderItems() {
+        return orderItems;
+    }
+
+    public ProductOrder orderItems(Set<OrderItem> orderItems) {
+        this.orderItems = orderItems;
+        return this;
+    }
+
+    public ProductOrder addOrderItem(OrderItem orderItem) {
+        this.orderItems.add(orderItem);
+        orderItem.setOrder(this);
+        return this;
+    }
+
+    public ProductOrder removeOrderItem(OrderItem orderItem) {
+        this.orderItems.remove(orderItem);
+        orderItem.setOrder(null);
+        return this;
+    }
+
+    public void setOrderItems(Set<OrderItem> orderItems) {
+        this.orderItems = orderItems;
     }
 
     public Customer getCustomer() {

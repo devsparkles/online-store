@@ -29,7 +29,7 @@ export class OrderItemUpdateComponent implements OnInit {
     totalPrice: [null, [Validators.required, Validators.min(0)]],
     status: [null, [Validators.required]],
     product: [],
-    order: [],
+    order: [null, Validators.required],
   });
 
   constructor(

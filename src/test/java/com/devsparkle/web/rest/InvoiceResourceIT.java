@@ -2,6 +2,7 @@ package com.devsparkle.web.rest;
 
 import com.devsparkle.StoreApp;
 import com.devsparkle.domain.Invoice;
+import com.devsparkle.domain.ProductOrder;
 import com.devsparkle.repository.InvoiceRepository;
 import com.devsparkle.service.InvoiceService;
 
@@ -53,6 +54,9 @@ public class InvoiceResourceIT {
     private static final BigDecimal DEFAULT_PAYMENT_AMOUNT = new BigDecimal(1);
     private static final BigDecimal UPDATED_PAYMENT_AMOUNT = new BigDecimal(2);
 
+    private static final String DEFAULT_CODE = "AAAAAAAAAA";
+    private static final String UPDATED_CODE = "BBBBBBBBBB";
+
     @Autowired
     private InvoiceRepository invoiceRepository;
 
@@ -80,7 +84,18 @@ public class InvoiceResourceIT {
             .status(DEFAULT_STATUS)
             .paymentMethod(DEFAULT_PAYMENT_METHOD)
             .paymentDate(DEFAULT_PAYMENT_DATE)
-            .paymentAmount(DEFAULT_PAYMENT_AMOUNT);
+            .paymentAmount(DEFAULT_PAYMENT_AMOUNT)
+            .code(DEFAULT_CODE);
+        // Add required entity
+        ProductOrder productOrder;
+        if (TestUtil.findAll(em, ProductOrder.class).isEmpty()) {
+            productOrder = ProductOrderResourceIT.createEntity(em);
+            em.persist(productOrder);
+            em.flush();
+        } else {
+            productOrder = TestUtil.findAll(em, ProductOrder.class).get(0);
+        }
+        invoice.setOrder(productOrder);
         return invoice;
     }
     /**
@@ -96,7 +111,18 @@ public class InvoiceResourceIT {
             .status(UPDATED_STATUS)
             .paymentMethod(UPDATED_PAYMENT_METHOD)
             .paymentDate(UPDATED_PAYMENT_DATE)
-            .paymentAmount(UPDATED_PAYMENT_AMOUNT);
+            .paymentAmount(UPDATED_PAYMENT_AMOUNT)
+            .code(UPDATED_CODE);
+        // Add required entity
+        ProductOrder productOrder;
+        if (TestUtil.findAll(em, ProductOrder.class).isEmpty()) {
+            productOrder = ProductOrderResourceIT.createUpdatedEntity(em);
+            em.persist(productOrder);
+            em.flush();
+        } else {
+            productOrder = TestUtil.findAll(em, ProductOrder.class).get(0);
+        }
+        invoice.setOrder(productOrder);
         return invoice;
     }
 
@@ -125,6 +151,7 @@ public class InvoiceResourceIT {
         assertThat(testInvoice.getPaymentMethod()).isEqualTo(DEFAULT_PAYMENT_METHOD);
         assertThat(testInvoice.getPaymentDate()).isEqualTo(DEFAULT_PAYMENT_DATE);
         assertThat(testInvoice.getPaymentAmount()).isEqualTo(DEFAULT_PAYMENT_AMOUNT);
+        assertThat(testInvoice.getCode()).isEqualTo(DEFAULT_CODE);
     }
 
     @Test
@@ -244,6 +271,25 @@ public class InvoiceResourceIT {
 
     @Test
     @Transactional
+    public void checkCodeIsRequired() throws Exception {
+        int databaseSizeBeforeTest = invoiceRepository.findAll().size();
+        // set the field null
+        invoice.setCode(null);
+
+        // Create the Invoice, which fails.
+
+
+        restInvoiceMockMvc.perform(post("/api/invoices")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(TestUtil.convertObjectToJsonBytes(invoice)))
+            .andExpect(status().isBadRequest());
+
+        List<Invoice> invoiceList = invoiceRepository.findAll();
+        assertThat(invoiceList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
     public void getAllInvoices() throws Exception {
         // Initialize the database
         invoiceRepository.saveAndFlush(invoice);
@@ -258,7 +304,8 @@ public class InvoiceResourceIT {
             .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())))
             .andExpect(jsonPath("$.[*].paymentMethod").value(hasItem(DEFAULT_PAYMENT_METHOD.toString())))
             .andExpect(jsonPath("$.[*].paymentDate").value(hasItem(DEFAULT_PAYMENT_DATE.toString())))
-            .andExpect(jsonPath("$.[*].paymentAmount").value(hasItem(DEFAULT_PAYMENT_AMOUNT.intValue())));
+            .andExpect(jsonPath("$.[*].paymentAmount").value(hasItem(DEFAULT_PAYMENT_AMOUNT.intValue())))
+            .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE)));
     }
     
     @Test
@@ -277,7 +324,8 @@ public class InvoiceResourceIT {
             .andExpect(jsonPath("$.status").value(DEFAULT_STATUS.toString()))
             .andExpect(jsonPath("$.paymentMethod").value(DEFAULT_PAYMENT_METHOD.toString()))
             .andExpect(jsonPath("$.paymentDate").value(DEFAULT_PAYMENT_DATE.toString()))
-            .andExpect(jsonPath("$.paymentAmount").value(DEFAULT_PAYMENT_AMOUNT.intValue()));
+            .andExpect(jsonPath("$.paymentAmount").value(DEFAULT_PAYMENT_AMOUNT.intValue()))
+            .andExpect(jsonPath("$.code").value(DEFAULT_CODE));
     }
     @Test
     @Transactional
@@ -305,7 +353,8 @@ public class InvoiceResourceIT {
             .status(UPDATED_STATUS)
             .paymentMethod(UPDATED_PAYMENT_METHOD)
             .paymentDate(UPDATED_PAYMENT_DATE)
-            .paymentAmount(UPDATED_PAYMENT_AMOUNT);
+            .paymentAmount(UPDATED_PAYMENT_AMOUNT)
+            .code(UPDATED_CODE);
 
         restInvoiceMockMvc.perform(put("/api/invoices")
             .contentType(MediaType.APPLICATION_JSON)
@@ -322,6 +371,7 @@ public class InvoiceResourceIT {
         assertThat(testInvoice.getPaymentMethod()).isEqualTo(UPDATED_PAYMENT_METHOD);
         assertThat(testInvoice.getPaymentDate()).isEqualTo(UPDATED_PAYMENT_DATE);
         assertThat(testInvoice.getPaymentAmount()).isEqualTo(UPDATED_PAYMENT_AMOUNT);
+        assertThat(testInvoice.getCode()).isEqualTo(UPDATED_CODE);
     }
 
     @Test

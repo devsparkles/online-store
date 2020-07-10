@@ -4,28 +4,20 @@
     {
       "fieldName": "quantity",
       "fieldType": "Integer",
-      "fieldValidateRules": [
-        "required",
-        "min"
-      ],
+      "fieldValidateRules": ["required", "min"],
       "fieldValidateRulesMin": "0"
     },
     {
       "fieldName": "totalPrice",
       "fieldType": "BigDecimal",
-      "fieldValidateRules": [
-        "required",
-        "min"
-      ],
+      "fieldValidateRules": ["required", "min"],
       "fieldValidateRulesMin": "0"
     },
     {
       "fieldName": "status",
       "fieldType": "OrderItemStatus",
       "fieldValues": "AVAILABLE,OUT_OF_STOCK,BACK_ORDER",
-      "fieldValidateRules": [
-        "required"
-      ]
+      "fieldValidateRules": ["required"]
     }
   ],
   "relationships": [
@@ -34,14 +26,15 @@
       "otherEntityName": "product",
       "otherEntityRelationshipName": "orderItem",
       "relationshipName": "product",
-      "otherEntityField": "id"
+      "otherEntityField": "name"
     },
     {
       "relationshipType": "many-to-one",
       "otherEntityName": "productOrder",
       "otherEntityRelationshipName": "orderItem",
+      "relationshipValidateRules": "required",
       "relationshipName": "order",
-      "otherEntityField": "id"
+      "otherEntityField": "code"
     }
   ],
   "changelogDate": "20200706164751",
@@ -54,5 +47,5 @@
   "readOnly": false,
   "embedded": false,
   "clientRootFolder": "",
-  "applications": "*"
+  "applications": ["store"]
 }
