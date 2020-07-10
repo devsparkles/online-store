@@ -25,6 +25,7 @@
       "relationshipType": "many-to-one",
       "otherEntityName": "product",
       "otherEntityRelationshipName": "orderItem",
+      "relationshipValidateRules": "required",
       "relationshipName": "product",
       "otherEntityField": "name"
     },

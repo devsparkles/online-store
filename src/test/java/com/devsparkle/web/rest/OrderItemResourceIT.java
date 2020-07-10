@@ -2,6 +2,7 @@ package com.devsparkle.web.rest;
 
 import com.devsparkle.StoreApp;
 import com.devsparkle.domain.OrderItem;
+import com.devsparkle.domain.Product;
 import com.devsparkle.domain.ProductOrder;
 import com.devsparkle.repository.OrderItemRepository;
 import com.devsparkle.service.OrderItemService;
@@ -68,6 +69,16 @@ public class OrderItemResourceIT {
             .totalPrice(DEFAULT_TOTAL_PRICE)
             .status(DEFAULT_STATUS);
         // Add required entity
+        Product product;
+        if (TestUtil.findAll(em, Product.class).isEmpty()) {
+            product = ProductResourceIT.createEntity(em);
+            em.persist(product);
+            em.flush();
+        } else {
+            product = TestUtil.findAll(em, Product.class).get(0);
+        }
+        orderItem.setProduct(product);
+        // Add required entity
         ProductOrder productOrder;
         if (TestUtil.findAll(em, ProductOrder.class).isEmpty()) {
             productOrder = ProductOrderResourceIT.createEntity(em);
@@ -90,6 +101,16 @@ public class OrderItemResourceIT {
             .quantity(UPDATED_QUANTITY)
             .totalPrice(UPDATED_TOTAL_PRICE)
             .status(UPDATED_STATUS);
+        // Add required entity
+        Product product;
+        if (TestUtil.findAll(em, Product.class).isEmpty()) {
+            product = ProductResourceIT.createUpdatedEntity(em);
+            em.persist(product);
+            em.flush();
+        } else {
+            product = TestUtil.findAll(em, Product.class).get(0);
+        }
+        orderItem.setProduct(product);
         // Add required entity
         ProductOrder productOrder;
         if (TestUtil.findAll(em, ProductOrder.class).isEmpty()) {
