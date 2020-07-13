@@ -33,7 +33,7 @@ import com.devsparkle.domain.enumeration.PaymentMethod;
  */
 @SpringBootTest(classes = StoreApp.class)
 @AutoConfigureMockMvc
-@WithMockUser
+@WithMockUser(username = "admin", authorities = {"ROLE_ADMIN"}, password = "admin")
 public class InvoiceResourceIT {
 
     private static final Instant DEFAULT_DATE = Instant.ofEpochMilli(0L);
@@ -307,7 +307,7 @@ public class InvoiceResourceIT {
             .andExpect(jsonPath("$.[*].paymentAmount").value(hasItem(DEFAULT_PAYMENT_AMOUNT.intValue())))
             .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE)));
     }
-    
+
     @Test
     @Transactional
     public void getInvoice() throws Exception {
