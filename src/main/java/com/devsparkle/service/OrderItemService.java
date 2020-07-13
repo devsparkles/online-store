@@ -2,6 +2,8 @@ package com.devsparkle.service;
 
 import com.devsparkle.domain.OrderItem;
 import com.devsparkle.repository.OrderItemRepository;
+import com.devsparkle.security.AuthoritiesConstants;
+import com.devsparkle.security.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,7 +49,11 @@ public class OrderItemService {
     @Transactional(readOnly = true)
     public Page<OrderItem> findAll(Pageable pageable) {
         log.debug("Request to get all OrderItems");
-        return orderItemRepository.findAll(pageable);
+        if(SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.ADMIN)){
+            return orderItemRepository.findAll(pageable);
+        } else {
+            return orderItemRepository.findAllByOrderCustomerUserLogin(SecurityUtils.getCurrentUserLogin().get(), pageable);
+        }
     }
 
 
@@ -60,7 +66,12 @@ public class OrderItemService {
     @Transactional(readOnly = true)
     public Optional<OrderItem> findOne(Long id) {
         log.debug("Request to get OrderItem : {}", id);
-        return orderItemRepository.findById(id);
+        if(SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.ADMIN)){
+            return orderItemRepository.findById(id);
+        } else {
+            return orderItemRepository.findOneByIdAndOrderCustomerUserLogin(id, SecurityUtils.getCurrentUserLogin().get());
+        }
+
     }
 
     /**
