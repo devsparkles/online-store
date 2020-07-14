@@ -1,6 +1,6 @@
-<div>
+<div class="jhi-product">
     <h2 id="page-heading">
-        <span jhiTranslate="storeApp.product.home.title">Products</span>
+        <span id="product-title" jhiTranslate="storeApp.product.home.title">Products</span>
         <span *jhiHasAnyAuthority="'ROLE_ADMIN'">
         <button [routerLink]="['/product/new']" class="btn btn-primary float-right jh-create-entity create-product"
                 id="jh-create-entity">

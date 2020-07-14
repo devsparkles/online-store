@@ -2,8 +2,8 @@ import { element, by, ElementFinder } from 'protractor';
 
 export class ProductComponentsPage {
   createButton = element(by.id('jh-create-entity'));
-  deleteButtons = element.all(by.css('jhi-product div table .btn-danger'));
-  title = element.all(by.css('jhi-product div h2#page-heading span')).first();
+  deleteButtons = element.all(by.css('div.jhi-product div.list-group div.row div.col-md-10 div.d-flex .btn-danger'));
+  title = element(by.id('product-title'));
   noResult = element(by.id('no-result'));
   entities = element(by.id('entities'));
 
