@@ -41,10 +41,7 @@
     "blueprints": [],
     "skipUserManagement": false,
     "skipClient": false,
-    "skipServer": false,
-    "herokuAppName": "mystorehool",
-    "herokuDeployType": "git",
-    "herokuJavaVersion": "11"
+    "skipServer": false
   },
   "entities": ["Customer", "Invoice", "OrderItem", "Product", "ProductCategory", "ProductOrder", "Shipment"]
 }
