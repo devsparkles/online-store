@@ -1,6 +1,12 @@
 #!/usr/bin/env groovy
 
 node {
+
+    stage('Initialize'){
+        def dockerHome = tool 'myDocker'
+        env.PATH = "${dockerHome}/bin:${env.PATH}"
+    }
+
     stage('checkout') {
         checkout scm
     }
