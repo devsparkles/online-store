@@ -11,7 +11,7 @@ node {
         checkout scm
     }
 
-    docker.withTool('myDocker').inside('-u jhipster -e GRADLE_USER_HOME=.gradle') {
+    docker.image('jhipster/jhipster:v6.10.0').inside('-u jhipster -e GRADLE_USER_HOME=.gradle') {
         stage('check java') {
             sh "java -version"
         }
