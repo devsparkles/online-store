@@ -44,7 +44,16 @@
     "skipServer": false,
     "herokuAppName": "mystorehooligan",
     "herokuDeployType": "jar",
-    "herokuJavaVersion": "11"
+    "herokuJavaVersion": "11",
+    "aws": {
+      "applicationName": "store",
+      "environmentName": "store-env",
+      "bucketName": "online-store-971",
+      "instanceType": "t2.micro",
+      "awsRegion": "eu-central-1",
+      "dbName": "onlinestore",
+      "dbInstanceClass": "db.t2.micro"
+    }
   },
   "entities": ["Customer", "Invoice", "OrderItem", "Product", "ProductCategory", "ProductOrder", "Shipment"]
 }
